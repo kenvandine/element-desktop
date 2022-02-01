@@ -26,6 +26,7 @@ parts:
       - libnspr4
       - libnss3
       - libvips42
+      - libsqlcipher0
     override-build: |
       set -xeu
       echo "Get GitHub releases..."
