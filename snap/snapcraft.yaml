@@ -60,6 +60,7 @@ parts:
 plugs:
   browser-sandbox:
     interface: browser-support
+    allow-sandbox: true
 
 apps:
   element-desktop:
