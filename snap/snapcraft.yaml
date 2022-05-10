@@ -58,9 +58,6 @@ parts:
         find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
 
 plugs:
-  browser-sandbox:
-    interface: browser-support
-    allow-sandbox: true
   shared-memory:
     private: true
 
@@ -68,9 +65,8 @@ apps:
   element-desktop:
     extensions: [gnome-3-38]
     desktop: usr/share/applications/element-desktop.desktop
-    command: opt/Element/element-desktop --use-tray-icon
+    command: opt/Element/element-desktop --use-tray-icon --no-sandbox
     plugs:
-      - browser-sandbox
       - shared-memory
       - camera
       - home
