@@ -61,6 +61,8 @@ plugs:
   browser-sandbox:
     interface: browser-support
     allow-sandbox: true
+  shared-memory:
+    private: true
 
 apps:
   element-desktop:
@@ -69,6 +71,7 @@ apps:
     command: opt/Element/element-desktop --use-tray-icon
     plugs:
       - browser-sandbox
+      - shared-memory
       - camera
       - home
       - network
