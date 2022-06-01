@@ -32,7 +32,7 @@ parts:
       echo "Get GitHub releases..."
       wget --quiet https://api.github.com/repos/vector-im/element-desktop/releases -O releases.json
       # Get the version from the tag_name and the download URL.
-      VERSION=$(jq . releases.json | grep tag_name | grep -v beta | head -n 1 | cut -d'"' -f4 | tr -d 'v')
+      VERSION=$(jq . releases.json | grep tag_name | grep -v beta | grep -v rc | head -n 1 | cut -d'"' -f4 | tr -d 'v')
       DEB_URL="https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_"$VERSION"_amd64.deb"
       wget --quiet $DEB_URL -O element-desktop.deb
       dpkg-deb -x element-desktop.deb $SNAPCRAFT_PART_INSTALL/
