@@ -58,22 +58,24 @@ parts:
         find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
 
 plugs:
-  shared-memory:
+  shmem:
+    interface: shared-memory
     private: true
 
 apps:
   element-desktop:
     extensions: [gnome-3-38]
     desktop: usr/share/applications/element-desktop.desktop
-    command: opt/Element/element-desktop --use-tray-icon --no-sandbox
+    command: opt/Element/element-desktop --use-tray-icon --no-sandbox --disable-seccomp-filter-sandbox
     plugs:
-      - shared-memory
+      - shmem
       - camera
       - home
       - network
       - audio-playback
       - audio-record
       - removable-media
+      - process-control
     environment:
       DISABLE_WAYLAND: '1'
       GTK_USE_PORTAL: "1"
