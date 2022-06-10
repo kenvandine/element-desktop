@@ -77,7 +77,5 @@ apps:
       - removable-media
       - process-control
     environment:
-      DISABLE_WAYLAND: '1'
       GTK_USE_PORTAL: "1"
       TMPDIR: $XDG_RUNTIME_DIR
-      WAYLAND_DISPLAY: no-display
