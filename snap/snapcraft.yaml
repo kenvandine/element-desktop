@@ -76,6 +76,7 @@ apps:
       - audio-record
       - removable-media
       - process-control
+      - unity7
     environment:
       GTK_USE_PORTAL: "1"
       TMPDIR: $XDG_RUNTIME_DIR
