@@ -1,5 +1,5 @@
 name: element-desktop
-base: core20
+base: core22
 adopt-info: element-desktop
 summary: Element Desktop
 description: |
@@ -13,6 +13,41 @@ architectures:
 compression: lzo
 
 parts:
+  libraries:
+    plugin: nil
+    stage-packages:
+      - libxss1
+      - libvips42
+      - libsqlcipher0
+    prime:
+      - usr/lib/*/libXss*
+      - usr/lib/*/libvips*
+      - usr/lib/*/libsqlcipher*
+      - usr/lib/*/libIlm* #needed by libvips
+      - usr/lib/*/libMagick* #needed by libvips
+      - usr/lib/*/libcfitsio* #needed by libvips
+      - usr/lib/*/libcgif* #needed by libvips
+      - usr/lib/*/libexif* #needed by libvips
+      - usr/lib/*/libfftw3* #needed by libvips
+      - usr/lib/*/libgsf* #needed by libvips
+      - usr/lib/*/libheif* #needed by libvips
+      - usr/lib/*/libaec* #needed by libvips
+      - usr/lib/*/libimagequant* #needed by libvips
+      - usr/lib/*/libmatio* #needed by libvips
+      - usr/lib/*/libopenslide* #needed by libvips
+      - usr/lib/*/libwebpmux* #needed by libvips
+      - usr/lib/*/libHalf* #needed by libIlmImf
+      - usr/lib/*/libIex* #needed by libIlmImf
+      - usr/lib/*/libIm* #needed by libIlmImf
+      - usr/lib/*/liblqr* #needed by libMagickCore-6
+      - usr/lib/*/libaom* #needed by libheif
+      - usr/lib/*/libda* #needed by libheif
+      - usr/lib/*/libde* #needed by libheif
+      - usr/lib/*/libx265* #needed by libheif
+      - usr/lib/*/libnuma* #needed by libheif
+      - usr/lib/*/libhdf5* #needed by libmatio
+      - usr/lib/*/libsz* #needed by libhdf5
+
   element-desktop:
     plugin: nil
     build-packages:
@@ -21,12 +56,6 @@ parts:
       - jq
       - dpkg
       - git
-    stage-packages:
-      - libxss1
-      - libnspr4
-      - libnss3
-      - libvips42
-      - libsqlcipher0
     override-build: |
       set -xeu
       echo "Get GitHub releases..."
@@ -38,8 +67,11 @@ parts:
       dpkg-deb -x element-desktop.deb $SNAPCRAFT_PART_INSTALL/
       rm element-desktop.deb releases.json
       sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $SNAPCRAFT_PART_INSTALL/usr/share/applications/element-desktop.desktop
-      snapcraftctl set-version "$VERSION"
+      craftctl set version="$VERSION"
     prime:
+      - opt/Element
+      - usr/share/icons/hicolor/512x512/apps/element-desktop.png
+      - usr/share/applications
       - -opt/*/chrome-sandbox
       - -opt/*/resources/app.asar.unpacked/node_modules/sharp/vendor/lib
       - -opt/*/resources/app.asar.unpacked/node_modules/sharp/vendor/include
@@ -47,15 +79,11 @@ parts:
   cleanup:
     after: [ element-desktop ]
     plugin: nil
-    build-snaps: [ gnome-3-38-2004 ]
+    build-snaps: [ gnome-42-2204 ]
     override-prime: |
         set -eux
-        cd /snap/gnome-3-38-2004/current
+        cd /snap/gnome-42-2204/current
         find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/{} \;
-        for CRUFT in bug lintian man; do
-          rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
-        done
-        find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
 
 plugs:
   shmem:
@@ -64,7 +92,7 @@ plugs:
 
 apps:
   element-desktop:
-    extensions: [gnome-3-38]
+    extensions: [gnome]
     desktop: usr/share/applications/element-desktop.desktop
     command: opt/Element/element-desktop --use-tray-icon --no-sandbox --disable-seccomp-filter-sandbox
     plugs:
