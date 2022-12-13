@@ -58,9 +58,9 @@ parts:
       - jq
       - dpkg
       - git
-    override-build: |
-      set -xeu
-      sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $SNAPCRAFT_PART_INSTALL/usr/share/applications/element-desktop.desktop
+    override-pull: |
+      craftctl default
+      sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $SNAPCRAFT_PART_SRC/usr/share/applications/element-desktop.desktop
     prime:
       - opt/Element
       - usr/share/icons/hicolor/512x512/apps/element-desktop.png
