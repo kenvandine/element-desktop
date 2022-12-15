@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ ! -n "$DISABLE_WAYLAND" ] ; then
+  WAYLAND_OPTS="--enable-features=UseOzonePlatform --ozone-platform=wayland"
+fi
+
+$SNAP/opt/Element/element-desktop \
+  --use-tray-icon --no-sandbox --disable-seccomp-filter-sandbox \
+    $WAYLAND_OPTS \
+    "$@"
