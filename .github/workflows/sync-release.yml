@@ -20,7 +20,9 @@ jobs:
             curl -sL https://api.github.com/repos/vector-im/element-desktop/releases | 
             jq .  | grep tag_name | grep -v beta | grep -v rc | head -n 1 | cut -d'"' -f4 | tr -d 'v'
           )
-          sed -i 's/^\(version: \).*$/\1'"$VERSION"'/' snap/snapcraft.yaml
+          if [ ${#VERSION} -gt 0 ]; then
+            sed -i 's/^\(version: \).*$/\1'"$VERSION"'/' snap/snapcraft.yaml
+          fi
           
       - name: Check for modified files
         id: git-check
