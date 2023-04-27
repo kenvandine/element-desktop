@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ ! -n "$DISABLE_WAYLAND" && -n "$WAYLAND_DISPLAY" ]]; then
-  WAYLAND_OPTS="--enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland"
+  WAYLAND_OPTS="--enable-features=WaylandWindowDecorations --ozone-platform-hint=auto"
 fi
 
 exec "$SNAP/opt/Element/element-desktop" --no-sandbox --disable-seccomp-filter-sandbox $WAYLAND_OPTS "$@"
