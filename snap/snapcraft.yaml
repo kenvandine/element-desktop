@@ -102,6 +102,7 @@ apps:
       - audio-playback
       - audio-record
       - removable-media
+      - screen-inhibit-control
       - process-control
       - unity7
     environment:
