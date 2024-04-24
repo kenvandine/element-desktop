@@ -1,6 +1,6 @@
 name: element-desktop
 base: core22
-version: 1.11.64
+version: 1.11.65
 adopt-info: element-desktop
 summary: Element Desktop
 description: |
