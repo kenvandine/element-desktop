@@ -1,5 +1,5 @@
 name: element-desktop
-base: core22
+base: core24
 version: 1.11.71
 adopt-info: element-desktop
 summary: Element Desktop
@@ -8,10 +8,12 @@ description: |
 
 grade: stable
 confinement: strict
-
-architectures:
-  - build-on: amd64
 compression: lzo
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
 
 parts:
   launcher:
@@ -25,7 +27,7 @@ parts:
     stage-packages:
       - libxss1
       - libvips42
-      - libsqlcipher0
+      - libsqlcipher1
     prime:
       - usr/lib/*/libXss*
       - usr/lib/*/libvips*
@@ -78,10 +80,10 @@ parts:
   cleanup:
     after: [ element-desktop ]
     plugin: nil
-    build-snaps: [ gnome-42-2204 ]
+    build-snaps: [ gnome-46-2404 ]
     override-prime: |
         set -eux
-        cd /snap/gnome-42-2204/current
+        cd /snap/gnome-46-2404/current
         find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/{} \;
 
 plugs:
