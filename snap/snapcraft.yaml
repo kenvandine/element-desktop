@@ -12,8 +12,7 @@ compression: lzo
 
 platforms:
   amd64:
-    build-on: [amd64]
-    build-for: [amd64]
+  arm64:
 
 parts:
   launcher:
@@ -59,7 +58,7 @@ parts:
 
   element-desktop:
     plugin: dump
-    source: https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_$SNAPCRAFT_PROJECT_VERSION_amd64.deb
+    source: https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_$SNAPCRAFT_PROJECT_VERSION_$CRAFT_ARCH_BUILD_FOR.deb
     build-packages:
       - gcc
       - wget
