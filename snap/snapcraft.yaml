@@ -1,11 +1,19 @@
 name: element-desktop
+title: Element Desktop
 base: core24
 version: 1.11.86
 adopt-info: element-desktop
-summary: Element Desktop
+summary: A feature-rich client for Matrix.org
 description: |
-   A feature-rich client for Matrix.org
+  A sovereign and secure communications
+  platform. Built by the creators of Matrix.
 
+website: https://element.io/
+issues: https://github.com/kenvandine/element-desktop/issues
+source-code:
+  - https://github.com/kenvandine/element-desktop
+  - https://github.com/element-hq/element-desktop
+contact: ken@vandine.org
 grade: stable
 confinement: strict
 compression: lzo
@@ -21,53 +29,12 @@ parts:
     override-build: |
       cp launcher $CRAFT_PART_INSTALL/
 
-  libraries:
-    plugin: nil
-    stage-packages:
-      - libxss1
-      - libvips42
-      - libsqlcipher1
-    prime:
-      - usr/lib/*/libXss*
-      - usr/lib/*/libvips*
-      - usr/lib/*/libsqlcipher*
-      - usr/lib/*/libIlm* #needed by libvips
-      - usr/lib/*/libMagick* #needed by libvips
-      - usr/lib/*/libcfitsio* #needed by libvips
-      - usr/lib/*/libcgif* #needed by libvips
-      - usr/lib/*/libexif* #needed by libvips
-      - usr/lib/*/libfftw3* #needed by libvips
-      - usr/lib/*/libgsf* #needed by libvips
-      - usr/lib/*/libheif* #needed by libvips
-      - usr/lib/*/libaec* #needed by libvips
-      - usr/lib/*/libimagequant* #needed by libvips
-      - usr/lib/*/libmatio* #needed by libvips
-      - usr/lib/*/libopenslide* #needed by libvips
-      - usr/lib/*/libwebpmux* #needed by libvips
-      - usr/lib/*/libHalf* #needed by libIlmImf
-      - usr/lib/*/libIex* #needed by libIlmImf
-      - usr/lib/*/libIm* #needed by libIlmImf
-      - usr/lib/*/liblqr* #needed by libMagickCore-6
-      - usr/lib/*/libaom* #needed by libheif
-      - usr/lib/*/libda* #needed by libheif
-      - usr/lib/*/libde* #needed by libheif
-      - usr/lib/*/libx265* #needed by libheif
-      - usr/lib/*/libnuma* #needed by libheif
-      - usr/lib/*/libhdf5* #needed by libmatio
-      - usr/lib/*/libsz* #needed by libhdf5
-
   element-desktop:
     plugin: dump
-    source: https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_$SNAPCRAFT_PROJECT_VERSION_$CRAFT_ARCH_BUILD_FOR.deb
-    build-packages:
-      - gcc
-      - wget
-      - jq
-      - dpkg
-      - git
+    source: https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_$SNAPCRAFT_PROJECT_VERSION_$CRAFT_ARCH_BUILD_FOR.deb 
     override-pull: |
       craftctl default
-      sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $SNAPCRAFT_PART_SRC/usr/share/applications/element-desktop.desktop
+      sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $CRAFT_PART_SRC/usr/share/applications/element-desktop.desktop
     prime:
       - opt/Element
       - usr/share/icons/hicolor/512x512/apps/element-desktop.png
@@ -76,14 +43,15 @@ parts:
       - -opt/*/resources/app.asar.unpacked/node_modules/sharp/vendor/lib
       - -opt/*/resources/app.asar.unpacked/node_modules/sharp/vendor/include
 
-  cleanup:
-    after: [ element-desktop ]
+  # Needed for setting the proper desktop file name in the electron apps
+  patch-desktop-file-name:
+    after: [element-desktop]
+    source: https://github.com/snapcrafters/patch-desktop-file-name.git
+    source-subdir: electron
     plugin: nil
-    build-snaps: [ gnome-46-2404 ]
-    override-prime: |
-        set -eux
-        cd /snap/gnome-46-2404/current
-        find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/{} \;
+    override-build: |
+      pip install asarPy --break-system-packages
+      python3 $CRAFT_PART_SRC_WORK/patch-desktop-filename.py $CRAFT_STAGE/opt/Element/resources/app.asar
 
 plugs:
   shmem:
