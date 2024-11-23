@@ -63,6 +63,7 @@ apps:
     extensions: [gnome]
     desktop: usr/share/applications/element-desktop.desktop
     command: launcher
+    autostart: element-desktop.desktop
     plugs:
       - shmem
       - camera
