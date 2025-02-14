@@ -78,4 +78,3 @@ apps:
     environment:
       GTK_USE_PORTAL: "1"
       TMPDIR: $XDG_RUNTIME_DIR
-      DISABLE_WAYLAND: 1
