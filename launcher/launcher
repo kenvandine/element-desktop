@@ -4,7 +4,7 @@ connect_text="Element Desktop requires access to the password-manager-service in
 
 To connect the interface, in a terminal run:
 
-sudo snap connect element-desktop:password-manager-service"
+<tt><b>sudo snap connect element-desktop:password-manager-service</b></tt>"
 if ! snapctl is-connected password-manager-service; then
   echo "password-manager-service not connected, please connect with:"
   echo "sudo snap connect element-desktop:password-manager-service"
