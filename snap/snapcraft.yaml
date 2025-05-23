@@ -52,6 +52,12 @@ parts:
     override-build: |
       pip install asarPy --break-system-packages
       python3 $CRAFT_PART_SRC_WORK/patch-desktop-filename.py $CRAFT_STAGE/opt/Element/resources/app.asar
+  zenity:
+    plugin: nil
+    stage-packages:
+      - zenity
+    prime:
+      - usr/bin/zenity
 
 plugs:
   shmem:
