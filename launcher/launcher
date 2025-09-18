@@ -13,7 +13,7 @@ if ! snapctl is-connected password-manager-service; then
 fi
 
 if [[ ! "$XDG_CURRENT_DESKTOP" =~ .*GNOME.* ]] then
-  WAYLAND_OPTS="--enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer --ozone-platform-hint=auto"
+  WAYLAND_OPTS="--enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer,UseOzonePlatform --ozone-platform-hint=auto"
 fi
 
 exec "$SNAP/opt/Element/element-desktop" --no-sandbox --disable-seccomp-filter-sandbox $WAYLAND_OPTS "$@"
