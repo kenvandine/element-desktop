@@ -12,7 +12,7 @@ if ! snapctl is-connected password-manager-service; then
   exit
 fi
 
-WAYLAND_OPTS = ""
+WAYLAND_OPTS=""
 
 if [ -n "$WAYLAND_DISPLAY" ] && [ -z "$DISABLE_WAYLAND" ]; then
   WAYLAND_OPTS="--enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer,UseOzonePlatform --ozone-platform-hint=auto"
