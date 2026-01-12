@@ -29,6 +29,12 @@ parts:
     override-build: |
       cp launcher $CRAFT_PART_INSTALL/
 
+  nss_patch:
+    plugin: nil
+    source: src
+    override-build: |
+      gcc -shared -fPIC -o $CRAFT_PART_INSTALL/nss_patch.so nss_patch.c -ldl
+
   element-desktop:
     plugin: dump
     source: https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_$SNAPCRAFT_PROJECT_VERSION_$CRAFT_ARCH_BUILD_FOR.deb 
@@ -85,3 +91,4 @@ apps:
     environment:
       GTK_USE_PORTAL: "1"
       TMPDIR: $XDG_RUNTIME_DIR
+      LIBSECRET_LOCAL_STORAGE: 1
