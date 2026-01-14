@@ -18,4 +18,7 @@ if [ -n "$WAYLAND_DISPLAY" ] && [ -z "$DISABLE_WAYLAND" ]; then
   WAYLAND_OPTS="--enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer,UseOzonePlatform --ozone-platform-hint=auto"
 fi
 
+# Override NSS to fix issues with authd logins
+export LD_PRELOAD=$SNAP/nss_patch.so
+
 exec "$SNAP/opt/Element/element-desktop" --no-sandbox --disable-seccomp-filter-sandbox $WAYLAND_OPTS "$@"
