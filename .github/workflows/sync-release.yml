@@ -17,7 +17,7 @@ jobs:
       - name: Fetch release version
         run: |
           VERSION=$(
-            curl -sL https://api.github.com/repos/vector-im/element-desktop/releases | 
+            curl -sL https://api.github.com/repos/vector-im/element-web/releases |
             jq .  | grep tag_name | grep -v beta | grep -v rc | head -n 1 | cut -d'"' -f4 | tr -d 'v'
           )
           if [ ${#VERSION} -gt 0 ]; then
