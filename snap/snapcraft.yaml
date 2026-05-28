@@ -1,7 +1,7 @@
 name: element-desktop
 title: Element Desktop
 base: core24
-version: 1.12.19
+version: 1.12.20
 adopt-info: element-desktop
 summary: A feature-rich client for Matrix.org
 description: |
