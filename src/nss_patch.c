@@ -7,9 +7,10 @@
 #include <dlfcn.h>
 #include <errno.h>
 
-typedef int (*getpwuid_r_t)(uid_t, struct passwd *, char *, size_t, struct passwd **);
-
-static int copy_str(char **dest_ptr, const char *src, char **buf_ptr, size_t *len_ptr) {
+// Safe string copy function that ensures null termination
+static int safe_copy_str(char **dest_ptr, const char *src, char **buf_ptr, size_t *len_ptr) {
+    if (!src || !dest_ptr || !buf_ptr || !len_ptr) return -1;
+    
     size_t slen = strlen(src) + 1;
     if (*len_ptr < slen) return -1;
     
@@ -22,16 +23,32 @@ static int copy_str(char **dest_ptr, const char *src, char **buf_ptr, size_t *le
 }
 
 int getpwuid_r(uid_t uid, struct passwd *pwd, char *buf, size_t buflen, struct passwd **result) {
-    
     // Only intercept if looking up "myself"
     if (uid == getuid()) {
+        // Get environment variables with fallbacks
         char *env_user = getenv("USER");
         char *env_home = getenv("HOME");
         char *env_shell = getenv("SHELL");
 
+        // Provide safe fallbacks
         if (!env_user) env_user = "user";
         if (!env_home) env_home = "/tmp";
         if (!env_shell) env_shell = "/bin/bash";
+
+        // Validate environment variables
+        if (!env_user || !env_home || !env_shell) {
+            static getpwuid_r_t real_func = NULL;
+            if (!real_func) {
+                real_func = (getpwuid_r_t)dlsym(RTLD_NEXT, "getpwuid_r");
+            }
+            
+            if (real_func) {
+                return real_func(uid, pwd, buf, buflen, result);
+            }
+            
+            *result = NULL;
+            return ENOENT;
+        }
 
         char *cursor = buf;
         size_t remaining = buflen;
@@ -39,12 +56,23 @@ int getpwuid_r(uid_t uid, struct passwd *pwd, char *buf, size_t buflen, struct p
         pwd->pw_uid = uid;
         pwd->pw_gid = getgid();
         
-        if (copy_str(&pwd->pw_name, env_user, &cursor, &remaining) < 0 ||
-            copy_str(&pwd->pw_passwd, "x", &cursor, &remaining) < 0 ||
-            copy_str(&pwd->pw_gecos, "Element User", &cursor, &remaining) < 0 ||
-            copy_str(&pwd->pw_dir, env_home, &cursor, &remaining) < 0 ||
-            copy_str(&pwd->pw_shell, env_shell, &cursor, &remaining) < 0) {
+        if (safe_copy_str(&pwd->pw_name, env_user, &cursor, &remaining) < 0 ||
+            safe_copy_str(&pwd->pw_passwd, "x", &cursor, &remaining) < 0 ||
+            safe_copy_str(&pwd->pw_gecos, "Element User", &cursor, &remaining) < 0 ||
+            safe_copy_str(&pwd->pw_dir, env_home, &cursor, &remaining) < 0 ||
+            safe_copy_str(&pwd->pw_shell, env_shell, &cursor, &remaining) < 0) {
             
+            // If we can't copy strings, fall back to real function
+            static getpwuid_r_t real_func = NULL;
+            if (!real_func) {
+                real_func = (getpwuid_r_t)dlsym(RTLD_NEXT, "getpwuid_r");
+            }
+            
+            if (real_func) {
+                return real_func(uid, pwd, buf, buflen, result);
+            }
+            
+            *result = NULL;
             return ERANGE;
         }
 
