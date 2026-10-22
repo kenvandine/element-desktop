@@ -21,4 +21,20 @@ fi
 # Override NSS to fix issues with authd logins
 export LD_PRELOAD=$SNAP/nss_patch.so
 
+# Set proxy environment variables if available
+if [ -n "$SNAP_PROXY_HTTP" ]; then
+  export HTTP_PROXY=$SNAP_PROXY_HTTP
+  export http_proxy=$SNAP_PROXY_HTTP
+fi
+
+if [ -n "$SNAP_PROXY_HTTPS" ]; then
+  export HTTPS_PROXY=$SNAP_PROXY_HTTPS
+  export https_proxy=$SNAP_PROXY_HTTPS
+fi
+
+if [ -n "$SNAP_PROXY_NO_PROXY" ]; then
+  export NO_PROXY=$SNAP_PROXY_NO_PROXY
+  export no_proxy=$SNAP_PROXY_NO_PROXY
+fi
+
 exec "$SNAP/opt/Element/element-desktop" --no-sandbox --disable-seccomp-filter-sandbox $WAYLAND_OPTS "$@"
