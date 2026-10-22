@@ -29,6 +29,8 @@ int getpwuid_r(uid_t uid, struct passwd *pwd, char *buf, size_t buflen, struct p
         char *env_home = getenv("HOME");
         char *env_shell = getenv("SHELL");
 
+        // If we can't get the environment variables, fall back to defaults
+        // but only if we're not in a snap environment where these should be set
         if (!env_user) env_user = "user";
         if (!env_home) env_home = "/tmp";
         if (!env_shell) env_shell = "/bin/bash";
