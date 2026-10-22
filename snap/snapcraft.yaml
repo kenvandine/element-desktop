@@ -69,6 +69,8 @@ plugs:
   shmem:
     interface: shared-memory
     private: true
+  network:
+    interface: network
 
 apps:
   element-desktop:
@@ -92,3 +94,4 @@ apps:
       GTK_USE_PORTAL: "1"
       TMPDIR: $XDG_RUNTIME_DIR
       LIBSECRET_LOCAL_STORAGE: 1
+
