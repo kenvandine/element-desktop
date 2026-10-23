@@ -21,4 +21,7 @@ fi
 # Override NSS to fix issues with authd logins
 export LD_PRELOAD=$SNAP/nss_patch.so
 
+# Ensure proper configuration directory is used
+export XDG_CONFIG_HOME=$HOME/.config
+
 exec "$SNAP/opt/Element/element-desktop" --no-sandbox --disable-seccomp-filter-sandbox $WAYLAND_OPTS "$@"
