@@ -1,4 +1,5 @@
 name: element-desktop
+
 title: Element Desktop
 base: core24
 version: 1.12.29
@@ -23,24 +24,34 @@ platforms:
   arm64:
 
 parts:
-  launcher:
-    plugin: dump
-    source: launcher
-    override-build: |
-      cp launcher $CRAFT_PART_INSTALL/
-
-  nss_patch:
-    plugin: nil
-    source: src
-    override-build: |
-      gcc -shared -fPIC -o $CRAFT_PART_INSTALL/nss_patch.so nss_patch.c -ldl
-
   element-desktop:
-    plugin: dump
-    source: https://packages.element.io/debian/pool/main/e/element-desktop/element-desktop_$SNAPCRAFT_PROJECT_VERSION_$CRAFT_ARCH_BUILD_FOR.deb 
-    override-pull: |
-      craftctl default
-      sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $CRAFT_PART_SRC/usr/share/applications/element-desktop.desktop
+    plugin: nil
+    source: https://github.com/element-hq/element-desktop.git
+    source-branch: main
+    override-build: |
+      # Install dependencies
+      apt-get update
+      apt-get install -y nodejs npm
+      
+      # Build the application
+      npm install
+      npm run build
+      
+      # Create the necessary directories
+      mkdir -p $CRAFT_PART_INSTALL/opt/Element
+      
+      # Copy built files
+      cp -r dist/* $CRAFT_PART_INSTALL/opt/Element/
+      
+      # Copy desktop file and icons
+      mkdir -p $CRAFT_PART_INSTALL/usr/share/applications
+      mkdir -p $CRAFT_PART_INSTALL/usr/share/icons/hicolor/512x512/apps
+      cp -r build/linux-unpacked/* $CRAFT_PART_INSTALL/opt/Element/
+      cp -r src/assets/icon.png $CRAFT_PART_INSTALL/usr/share/icons/hicolor/512x512/apps/element-desktop.png
+      cp -r src/assets/element-desktop.desktop $CRAFT_PART_INSTALL/usr/share/applications/
+      
+      # Fix desktop file path
+      sed -i 's|Icon=element-desktop|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/element-desktop.png|' $CRAFT_PART_INSTALL/usr/share/applications/element-desktop.desktop
     prime:
       - opt/Element
       - usr/share/icons/hicolor/512x512/apps/element-desktop.png
