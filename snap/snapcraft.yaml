@@ -69,6 +69,8 @@ plugs:
   shmem:
     interface: shared-memory
     private: true
+  doc:
+    interface: doc
 
 apps:
   element-desktop:
@@ -88,6 +90,7 @@ apps:
       - process-control
       - unity7
       - password-manager-service
+      - doc
     environment:
       GTK_USE_PORTAL: "1"
       TMPDIR: $XDG_RUNTIME_DIR
